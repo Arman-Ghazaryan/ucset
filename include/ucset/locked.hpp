@@ -45,22 +45,22 @@ class locked_gt {
         [[nodiscard]] status_t erase(identifier_t const& id) noexcept { return unlocked_.erase(id); }
 
         [[nodiscard]] status_t stage() noexcept {
-            std::unique_lock _ {store_.mutex_};
+            // std::unique_lock _ {store_.mutex_};
             return unlocked_.stage();
         }
 
         [[nodiscard]] status_t reset() noexcept {
-            std::unique_lock _ {store_.mutex_};
+            // std::unique_lock _ {store_.mutex_};
             return unlocked_.reset();
         }
 
         [[nodiscard]] status_t rollback() noexcept {
-            std::unique_lock _ {store_.mutex_};
+            // std::unique_lock _ {store_.mutex_};
             return unlocked_.rollback();
         }
 
         [[nodiscard]] status_t commit() noexcept {
-            std::unique_lock _ {store_.mutex_};
+            // std::unique_lock _ {store_.mutex_};
             return unlocked_.commit();
         }
 
@@ -95,7 +95,7 @@ class locked_gt {
 
     locked_gt(unlocked_t&& unlocked) noexcept : unlocked_(std::move(unlocked)) {}
     locked_gt& operator=(locked_gt&& other) noexcept {
-        std::unique_lock _ {mutex_};
+        // std::unique_lock _ {mutex_};
         unlocked_ = std::move(other.unlocked_);
         return *this;
     }
@@ -122,20 +122,20 @@ class locked_gt {
 
     [[nodiscard]] std::optional<transaction_t> transaction() noexcept {
         std::optional<transaction_t> result;
-        std::unique_lock _ {mutex_};
+        // std::unique_lock _ {mutex_};
         if (auto unlocked = unlocked_.transaction(); unlocked)
             result.emplace(transaction_t {*this, std::move(unlocked).value()});
         return result;
     }
 
     [[nodiscard]] status_t upsert(element_t&& element) noexcept {
-        std::unique_lock _ {mutex_};
+        // std::unique_lock _ {mutex_};
         return unlocked_.upsert(std::forward<element_t>(element));
     }
 
     template <typename elements_begin_at, typename elements_end_at = elements_begin_at>
     [[nodiscard]] status_t upsert(elements_begin_at begin, elements_end_at end) noexcept {
-        std::unique_lock _ {mutex_};
+        // std::unique_lock _ {mutex_};
         return unlocked_.upsert(begin, end);
     }
 
@@ -173,7 +173,7 @@ class locked_gt {
 
     template <typename lower_at = identifier_t, typename upper_at = identifier_t, typename callback_at = no_op_t>
     [[nodiscard]] status_t range(lower_at&& lower, upper_at&& upper, callback_at&& callback) noexcept {
-        std::unique_lock _ {mutex_};
+        // std::unique_lock _ {mutex_};
         return unlocked_.range(std::forward<lower_at>(lower),
                                std::forward<upper_at>(upper),
                                std::forward<callback_at>(callback));
@@ -181,19 +181,19 @@ class locked_gt {
 
     template <typename lower_at = identifier_t, typename upper_at = identifier_t, typename callback_at = no_op_t>
     [[nodiscard]] status_t erase_range(lower_at&& lower, upper_at&& upper, callback_at&& callback) noexcept {
-        std::unique_lock _ {mutex_};
+        // std::unique_lock _ {mutex_};
         return unlocked_.erase_range(std::forward<lower_at>(lower),
                                      std::forward<upper_at>(upper),
                                      std::forward<callback_at>(callback));
     }
 
     [[nodiscard]] status_t clear() noexcept {
-        std::unique_lock _ {mutex_};
+        // std::unique_lock _ {mutex_};
         return unlocked_.clear();
     }
 
     [[nodiscard]] status_t reserve(std::size_t size) noexcept {
-        std::unique_lock _ {mutex_};
+        // std::unique_lock _ {mutex_};
         return unlocked_.reserve(size);
     }
 
